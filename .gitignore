@@ -6,3 +6,14 @@ stremio/
 
 # Arcane
 arcane/data/
+
+# NPM
+npm/data/
+npm/letsencrypt/
+npm/mysql/
+
+# AdGuard
+adguard/work/
+adguard/data/
+**/logs/
+*.log
