@@ -18,3 +18,4 @@ adguard/data/
 **/logs/
 *.log
 adguard/conf/AdGuardHome.yaml
+tailscale/state/

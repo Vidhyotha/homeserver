@@ -10,6 +10,10 @@ The network follows a three-step handshake to enable clean `.home` URLs house-wi
 2. **AdGuard Home:** Acts as the DNS resolver, rewriting `.home` domains to the server IP.
 3. **Nginx Proxy Manager (NPM):** Acts as the reverse proxy, routing traffic from Port 80 to specific service ports.
 
+### VPN & Remote Access
+- **Tailscale**: Deployed in `network_mode: host` to act as a Subnet Router (advertising `192.168.1.0/24`).
+- **Global DNS**: Tailscale is configured to override local DNS and point all remote devices to the AdGuard Home container to seamlessly resolve `.home` local domains on the go.
+
 ## 🛠 Services & Local URLs
 
 | Service | Host Port | Local URL | Description |
@@ -21,8 +25,6 @@ The network follows a three-step handshake to enable clean `.home` URLs house-wi
 | **Open-WebUI** | 3000 | `http://ai.home` | AI Chat Interface (Websockets enabled) |
 | **Navidrome** | 4533 | `http://music.home` | Personal Music Server |
 | **Stremio** | 8080 | `http://stremio.home` | Universal Media Aggregator |
-| **Watchtower** | *TBD* | *Pending* | Automated Docker Image Updates |
-| **Tailscale** | *N/A* | *Pending* | Secure Remote Network Access |
 
 ## ⚙️ Technical Implementation & Fixes
 
@@ -51,12 +53,7 @@ nameserver 1.1.1.1
 
 ```
 
-### 3. Homepage Aesthetic & Grid Layout
-
-* **Layout:** Achieved a unified, high-density 2/4 responsive grid by using two separate service groups in `settings.yaml` and applying `header: false` to the bottom group to merge them visually.
-* **Docker Socket:** Mapped `/var/run/docker.sock` (Read-Only) into the Homepage container and created `docker.yaml` to pull live CPU/RAM stats directly into the service cards.
-
-### 4. AdGuard Home "Admin Port" Fix
+### 3. AdGuard Home "Admin Port" Fix
 
 The dashboard was inaccessible on port `8081` because the internal container configuration was wrong.
 
@@ -70,12 +67,12 @@ http:
 
 ```
 
-### 5. Nginx Proxy Manager (NPM) Settings
+### 4. Nginx Proxy Manager (NPM) Settings
 
 * **Forward IP:** Always use `192.168.1.32` instead of `localhost`.
 * **Websockets Support:** Enabled for `ai.home` to allow real-time AI response streaming.
 
-### 6. Git & Security Strategy
+### 5. Git & Security Strategy
 
 * **Sensitive Data:** `AdGuardHome.yaml` and `.env` files are in `.gitignore` to protect password hashes.
 * **Ignored Directories:** `adguard/work/`, `adguard/data/`, and `**/logs/`.
