@@ -14,7 +14,7 @@ The network follows a three-step handshake to enable clean `.home` URLs house-wi
 - **Tailscale**: Deployed in `network_mode: host` to act as a Subnet Router (advertising `192.168.1.0/24`).
 - **Global DNS**: Tailscale is configured to override local DNS and point all remote devices to the AdGuard Home container to seamlessly resolve `.home` local domains on the go.
 
-## 🛠 Services & Local URLs
+## Services & Local URLs
 
 | Service | Host Port | Local URL | Description |
 | --- | --- | --- | --- |
@@ -26,7 +26,7 @@ The network follows a three-step handshake to enable clean `.home` URLs house-wi
 | **Navidrome** | 4533 | `http://music.home` | Personal Music Server |
 | **Stremio** | 8080 | `http://stremio.home` | Universal Media Aggregator |
 
-## ⚙️ Technical Implementation & Fixes
+## Technical Implementation & Fixes
 
 ### 1. The Apple `.local` mDNS Conflict (iPad/macOS Fix)
 
