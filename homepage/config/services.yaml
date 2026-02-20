@@ -22,6 +22,12 @@
           type: tailscale
           deviceid: nJ1wp11Afo11CNTRL
           key: {{HOMEPAGE_VAR_TAILSCALE_KEY}}
+    - Watchtower:
+        icon: watchtower.png
+        widget:
+          type: watchtower
+          url: http://192.168.1.32:9393
+          key: {{HOMEPAGE_VAR_WATCHTOWER_TOKEN}}
 
 - Dashboard Part 2:
     - AdGuard Home:
