@@ -9,7 +9,7 @@
           password: {{HOMEPAGE_VAR_NPM_PASS}}
     - Arcane:
         icon: arcane.png
-        href: http://arcane.local
+        href: http://arcane.home
         widget:
           type: arcane
           url: http://192.168.1.32:3552
@@ -29,10 +29,10 @@
         href: http://192.168.1.32:8081
     - AI Chat:
         icon: open-webui.png
-        href: http://ai.local
+        href: http://ai.home
     - Music:
         icon: navidrome.png
-        href: http://music.local
+        href: http://music.home
     - Stremio:
         icon: stremio.png
-        href: http://stremio.local
+        href: http://stremio.home
