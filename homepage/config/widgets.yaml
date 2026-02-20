@@ -1,0 +1,11 @@
+- datetime:
+    text_size: l
+    format:
+      timeStyle: short
+      dateStyle: long 
+      hour12: true
+
+- resources:
+    cpu: true
+    memory: true
+    disk: /

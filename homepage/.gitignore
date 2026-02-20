@@ -1,0 +1,8 @@
+# Ignore environment variables and secrets
+.env
+*.env
+.env.*
+
+# Ignore Homepage cache and logs
+logs/
+images/

@@ -9,5 +9,4 @@ services:
     ports:
       - "53:53/tcp"    # DNS Port
       - "53:53/udp"    # DNS Port
-      - "3001:3000/tcp" # Initial Setup UI
       - "8081:80/tcp"   # Admin Dashboard (after setup)

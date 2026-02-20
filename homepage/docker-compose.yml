@@ -1,0 +1,13 @@
+services:
+  homepage:
+    image: ghcr.io/gethomepage/homepage:latest
+    container_name: homepage
+    ports:
+      - 3001:3000
+    volumes:
+      - /srv/homepage/config:/app/config
+    env_file:
+      - .env
+    environment:
+      - HOMEPAGE_ALLOWED_HOSTS=dashboard.home,192.168.1.32,192.168.1.32:3001
+    restart: unless-stopped

@@ -1,0 +1,24 @@
+---
+title: HomeServer
+headerStyle: clean
+fullWidth: true # Forces the dashboard to take up the entire window width
+background: https://images.unsplash.com/photo-1763396519853-28ca56230bda?q=80&w=2070&auto=format&fit=crop
+cardBlur: md
+theme: dark
+color: slate
+
+layout:
+  Dashboard:
+    style: row
+    columns: 2
+  Dashboard Part 2:
+    style: row
+    columns: 4
+    header: false # This hides the title so it looks like a single grid
+
+search:
+  provider: google
+  focus: true
+  target: _blank
+
+host_validation: false

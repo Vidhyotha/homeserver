@@ -1,0 +1,31 @@
+- Dashboard:
+    - NPM:
+        icon: nginx-proxy-manager.png
+        href: http://192.168.1.32:81
+        widget:
+          type: npm
+          url: http://192.168.1.32:81
+          username: {{HOMEPAGE_VAR_NPM_USER}}
+          password: {{HOMEPAGE_VAR_NPM_PASS}}
+    - Arcane:
+        icon: arcane.png
+        href: http://arcane.local
+        widget:
+          type: arcane
+          url: http://192.168.1.32:3552
+          env: 0
+          key: {{HOMEPAGE_VAR_ARCANE_KEY}}
+
+- Dashboard Part 2:
+    - AdGuard Home:
+        icon: adguard-home.png
+        href: http://192.168.1.32:8081
+    - AI Chat:
+        icon: open-webui.png
+        href: http://ai.local
+    - Music:
+        icon: navidrome.png
+        href: http://music.local
+    - Stremio:
+        icon: stremio.png
+        href: http://stremio.local
