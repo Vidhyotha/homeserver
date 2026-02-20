@@ -76,3 +76,9 @@ http:
 
 * **Sensitive Data:** `AdGuardHome.yaml` and `.env` files are in `.gitignore` to protect password hashes.
 * **Ignored Directories:** `adguard/work/`, `adguard/data/`, and `**/logs/`.
+
+### 6. Automated Maintenance
+- **Watchtower**: Automatically monitors all running containers and pulls the latest base images every 24 hours.
+  - **Port**: `9393` (Exposed for Homepage metrics API).
+  - **API**: Secured via local token, mapped to Homepage to display live container scan statistics.
+  - **Cleanup**: Configured to automatically delete stale images to prevent SSD bloat.
