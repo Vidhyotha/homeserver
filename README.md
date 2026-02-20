@@ -25,6 +25,7 @@ The network follows a three-step handshake to enable clean `.home` URLs house-wi
 | **Open-WebUI** | 3000 | `http://ai.home` | AI Chat Interface (Websockets enabled) |
 | **Navidrome** | 4533 | `http://music.home` | Personal Music Server |
 | **Stremio** | 8080 | `http://stremio.home` | Universal Media Aggregator |
+| **Watchtower** | 9393 | `http://192.168.1.32:9393` | Automated Container Updates (API) |
 
 ## Technical Implementation & Fixes
 
