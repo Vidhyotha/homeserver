@@ -1,5 +1,10 @@
-# Environment Variables
-.env.global
+# Environment Variables & Secrets
+**/.env
+**/.env.*
+!.env.global.example
+
+# Backups
+backups/
 
 # Stremio
 stremio/

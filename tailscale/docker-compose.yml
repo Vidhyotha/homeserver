@@ -1,10 +1,12 @@
 services:
   tailscale:
-    image: tailscale/tailscale:latest
+    image: tailscale/tailscale@sha256:2667499ed87ae29218f292556ba062918402dd5e92e93637af14867e4df12dd3
     container_name: tailscale
     network_mode: host
     environment:
       - TS_STATE_DIR=/var/lib/tailscale # Forces Tailscale to save to the disk
+      - TS_ACCEPT_DNS=false
+      - TS_EXTRA_ARGS=--advertise-routes=192.168.1.0/24
     cap_add:
       - net_admin
       - sys_module
@@ -12,3 +14,16 @@ services:
       - /srv/tailscale/state:/var/lib/tailscale
       - /dev/net/tun:/dev/net/tun
     restart: unless-stopped
+    labels:
+      com.centurylinklabs.watchtower.enable: "false"
+    healthcheck:
+      test: ["CMD", "tailscale", "status"]
+      interval: 60s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"

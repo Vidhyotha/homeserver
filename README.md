@@ -13,6 +13,11 @@ The network follows a three-step handshake to enable clean `.home` URLs house-wi
 ### VPN & Remote Access
 - **Tailscale**: Deployed in `network_mode: host` to act as a Subnet Router (advertising `192.168.1.0/24`).
 - **Global DNS**: Tailscale is configured to override local DNS and point all remote devices to the AdGuard Home container to seamlessly resolve `.home` local domains on the go.
+- **Reproduced in Compose**: The otherwise-manual `tailscale up` flags are now encoded as `TS_ACCEPT_DNS=false` and `TS_EXTRA_ARGS=--advertise-routes=192.168.1.0/24`, so re-deploying restores the subnet router automatically. If the node reports `Logged out`, re-authenticate once:
+  ```bash
+  docker exec tailscale tailscale up --accept-dns=false --advertise-routes=192.168.1.0/24
+  ```
+  then approve the printed URL in the Tailscale admin console.
 
 ## Services & Local URLs
 
@@ -75,11 +80,44 @@ http:
 
 ### 5. Git & Security Strategy
 
-* **Sensitive Data:** `AdGuardHome.yaml` and `.env` files are in `.gitignore` to protect password hashes.
-* **Ignored Directories:** `adguard/work/`, `adguard/data/`, and `**/logs/`.
+* **Secrets:** All credentials live in per-stack, gitignored `.env` files (`arcane/.env`, `npm/.env`, `watchtower/.env`, `homepage/.env`). Compose files interpolate from them via `env_file`; nothing sensitive is committed.
+* **Arcane Keys:** `ENCRYPTION_KEY` and `JWT_SECRET` were previously committed (and pushed to GitHub). They have been rotated and moved to `arcane/.env`.
+* **NPM DB Credentials:** `MYSQL_*` / `DB_MYSQL_*` moved to `npm/.env` with generated passwords, applied to the live MariaDB (`ALTER USER`).
+* **Watchtower API Token:** stored in `watchtower/.env`; the Homepage widget reads the same value from `homepage/.env` (keep the two in sync).
+* **AdGuard Config:** The live `AdGuardHome.yaml` stays gitignored (bcrypt hash). `adguard/conf/AdGuardHome.yaml.example` is tracked with the critical `http.address: 0.0.0.0:80` fix and the `.home` DNS rewrites so a rebuild is reproducible.
+* **Ignored Directories:** `adguard/work/`, `adguard/data/`, `stremio/`, `arcane/data/`, `npm/data|letsencrypt|mysql`, `tailscale/state/`, `backups/`, and `**/logs/`.
+* **NPM Admin:** The admin UI on port `81` has no IP restriction; restrict it via NPM Access Lists or `ufw allow from 192.168.1.0/24 to any port 81 proto tcp`.
 
 ### 6. Automated Maintenance
-- **Watchtower**: Automatically monitors all running containers and pulls the latest base images every 24 hours.
+- **Watchtower**: Aims to automatically pull the latest base images for the dashboard/media/app containers.
   - **Port**: `9393` (Exposed for Homepage metrics API).
-  - **API**: Secured via local token, mapped to Homepage to display live container scan statistics.
+  - **API**: Secured via `WATCHTOWER_HTTP_API_TOKEN` (from `watchtower/.env`), mapped to Homepage to display live container scan statistics.
   - **Cleanup**: Configured to automatically delete stale images to prevent SSD bloat.
+  - **Exclusions**: Critical / reconcilable-only services are pinned to image digests and carry `com.centurylinklabs.watchtower.enable=false` so they are **not** auto-updated: `adguardhome`, `tailscale`, `npm-app`, `npm-db`, `arcane`, `open-webui`. Watchtower only manages the remaining `:latest` services (`homepage`, `navidrome`, `stremio`, and itself).
+
+### 7. Version Pinning
+
+Infrastructure images are pinned by digest to the exact known-good version that was running (see each `docker-compose.yml`). To update a pinned service deliberately, replace the `@sha256:` digest (and tag) with a newer release's digest:
+
+```bash
+docker pull <image>:<new-version>
+docker inspect --format '{{index .RepoDigests 0}}' <image>:<new-version>  # copy the @sha256 digest
+# update the compose file, then `docker compose up -d`
+```
+
+### 8. Health Checks & Log Rotation
+
+Every service now has a container healthcheck (checked via `docker ps`) so outages surface instead of failing silently, and `logging` limits each container to 3 x 10 MiB rotated JSON logs to prevent unbounded SSD growth.
+
+### 9. Backups
+
+`scripts/backup.sh` snapshots the data that isn't in git (env files, NPM config/certs/DB, AdGuard config, Navidrome DB, Arcane data, Stremio state, Tailscale state, and the Open-WebUI volume) into `/srv/backups/`, keeping the last 7. Media (`/data/music`, `/data/movies`) is intentionally excluded.
+
+```bash
+/srv/scripts/backup.sh
+```
+
+Recommended cron (runs nightly at 2:30 AM):
+```cron
+30 2 * * * /srv/scripts/backup.sh >> /srv/backups/backup.log 2>&1
+```

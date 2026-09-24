@@ -11,3 +11,8 @@ services:
     environment:
       - HOMEPAGE_ALLOWED_HOSTS=dashboard.home,192.168.1.32,192.168.1.32:3001
     restart: unless-stopped
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"

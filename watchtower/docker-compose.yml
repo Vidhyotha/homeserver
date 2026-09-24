@@ -6,6 +6,8 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock # Allows Watchtower to control other containers
     ports:
       - 9393:8080
+    env_file:
+      - .env
     environment:
       - TZ=Asia/Kolkata
       - WATCHTOWER_CLEANUP=true
@@ -13,5 +15,10 @@ services:
       - WATCHTOWER_POLL_INTERVAL=86400
       - DOCKER_API_VERSION=1.44
       - WATCHTOWER_HTTP_API_METRICS=true
-      - WATCHTOWER_HTTP_API_TOKEN=my_secure_watchtower_token
+      - WATCHTOWER_HTTP_API_TOKEN=${WATCHTOWER_HTTP_API_TOKEN}
     restart: unless-stopped
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"

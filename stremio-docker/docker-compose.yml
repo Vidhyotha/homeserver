@@ -1,0 +1,23 @@
+services:
+  stremio:
+    image: tsaridas/stremio-docker:latest
+    container_name: stremio
+    environment:
+      - AUTO_SERVER_URL=1
+      - NO_CORS=1
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+    volumes:
+      - /srv/stremio:/root/.stremio-server
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://127.0.0.1:8080/ || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
