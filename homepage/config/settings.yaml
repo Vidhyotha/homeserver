@@ -20,3 +20,5 @@ search:
   provider: google
   focus: true
   target: _blank
+
+host_validation: false
